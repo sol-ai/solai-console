@@ -6,7 +6,14 @@ import { v4 as uuid } from "uuid"
 const backendAddress = "http://localhost:3001"
 const apiAddress = backendAddress + "/api"
 
-export default (): [boolean, SimulationData[], SimulationResult[], () => void, () => void] => {
+export default (): [
+  boolean,
+  SimulationData[],
+  SimulationResult[],
+  () => void,
+  () => void,
+  () => void,
+] => {
   const [simulationsQueueConnected, setSimulationsQueueConnected] = useState<boolean>(false)
   const [simulationsQueue, setSimulationsQueue] = useState<SimulationData[]>([])
   const [simulationsResultsQueue, setSimulationsResultsQueue] = useState<SimulationResult[]>([])
@@ -46,8 +53,16 @@ export default (): [boolean, SimulationData[], SimulationResult[], () => void, (
       .then((queue) => setSimulationsQueue(queue))
   }
 
+  const deleteAllSimulationResults = () => {
+    fetch(apiAddress + "/deleteAllSimulationResults", {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((queue) => setSimulationsResultsQueue(queue))
+  }
+
   const pushExampleSimulation = () => {
-    fetch("frankCharacterConfig.json")
+    fetch("exampleFrankConfig.json")
       .then((res) => res.json())
       .then((charConfig) => {
         const simData: SimulationData = {
@@ -71,6 +86,7 @@ export default (): [boolean, SimulationData[], SimulationResult[], () => void, (
     simulationsQueue,
     simulationsResultsQueue,
     deleteAllSimulations,
+    deleteAllSimulationResults,
     pushExampleSimulation,
   ]
 }

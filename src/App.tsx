@@ -2,9 +2,8 @@ import React, { useState } from "react"
 import useInterval from "./hooks/useInterval"
 import { simulationServerURL } from "./addresses"
 import RunningGame from "./components/RunningGame"
-import useSimulationQueue from "./services/simulation_queue/useSimulationQueue"
 import styled from "styled-components"
-import SolSimulationData from "./components/SolSimulationData"
+import SimulationQueue from "./components/SimulationQueue"
 
 const Wrapper = styled.div`
   display: grid;
@@ -23,7 +22,7 @@ const EvolverSection = styled.div`
   grid-area: evolver;
 `
 
-const SimulationQueueSection = styled.div`
+const StyledSimulationQueue = styled(SimulationQueue)`
   grid-area: simulationQueue;
 `
 
@@ -33,16 +32,7 @@ const SimulatorSection = styled.div`
 
 function App() {
   const [gameSimulatorOnline, setGameSimulatorOnline] = useState<boolean>(false)
-  const [runningGamesIds, setRunningGamesIds] = useState<string[]>([])
-  const [gameData, setGameData] = useState<any[]>([])
-
-  const [
-    simulationQueueConnected,
-    simulationsQueue,
-    simulationsResultsQueue,
-    deleteAllSimulations,
-    pushExampleSimulation,
-  ] = useSimulationQueue()
+  const [runningSimulationsIds, setRunningSimulationsIds] = useState<string[]>([])
 
   useInterval(() => {
     fetch(simulationServerURL + "/hello")
@@ -53,33 +43,14 @@ function App() {
 
   useInterval(() => {
     if (gameSimulatorOnline) {
-      fetch(simulationServerURL + "/runningGames")
+      fetch(simulationServerURL + "/runningSimulations")
+        .then((res) => (!res.ok ? Promise.reject() : res))
         .then((res) => res.json())
-        .then((newRunningGameIds) => setRunningGamesIds(newRunningGameIds))
+        .then((json) => json as string[])
+        .then(setRunningSimulationsIds)
         .catch((err) => null)
     }
-  }, 5000)
-
-  const handleCreateGame = () => {
-    fetch(simulationServerURL + "/createGame", {
-      method: "POST",
-    })
-  }
-
-  const handleTerminateGame = (gameId: string) => {
-    fetch(simulationServerURL + "/terminateGame/" + gameId, {
-      method: "DELETE",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    })
-  }
-
-  const handleGetGameData = (gameId: string) => {
-    fetch(simulationServerURL + "/playersData/" + gameId)
-      .then((res) => res.json())
-      .then((data) => setGameData(data))
-  }
+  }, 500)
 
   return (
     <Wrapper>
@@ -87,29 +58,20 @@ function App() {
         <h1>Sol AI</h1>
       </Header>
       <EvolverSection>Evolver</EvolverSection>
-      <SimulationQueueSection>
-        {simulationQueueConnected ? "Connected!" : "Disconnected :("}
-        <br />
-        <button onClick={deleteAllSimulations}>Delete all simulations</button>
-        <button onClick={pushExampleSimulation}>Push example simulation</button>
-        <br />
-        {/*{simulationsQueue.map((simulationData) => (*/}
-        {/*  <SolSimulationData simulationData={simulationData} expanded={true} />*/}
-        {/*))}*/}
-      </SimulationQueueSection>
+      <StyledSimulationQueue />
       <SimulatorSection>
         {gameSimulatorOnline ? (
           <span>Game simulator online!</span>
         ) : (
           <span>Game simulator offline :(</span>
         )}
-        <button onClick={() => handleCreateGame()}>Create game</button>
-        <p>{JSON.stringify(gameData)}</p>
-        {runningGamesIds.map((id) => (
+        {/*<button onClick={() => handleCreateGame()}>Create game</button>*/}
+        {runningSimulationsIds.map((id) => (
           <RunningGame
+            key={id}
             gameId={id}
-            onTerminateClick={handleTerminateGame}
-            onPlayersDataClick={handleGetGameData}
+            // onTerminateClick={handleTerminateGame}
+            // onPlayersDataClick={handleGetGameData}
           />
         ))}
       </SimulatorSection>
