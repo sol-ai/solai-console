@@ -1,13 +1,25 @@
 import React, { useState } from "react"
 import useInterval from "./hooks/useInterval"
-import { simulationServerURL } from "./addresses"
 import RunningGame from "./components/RunningGame"
 import styled from "styled-components"
 import SimulationQueue from "./pages/SimulationQueuePage"
+import SimulatorPage from "./pages/SimulatorPage"
 
-const Wrapper = styled.div`
+enum Section {
+  evolver = "evolver",
+  queue = "queue",
+  simulator = "simulator",
+}
+
+const Wrapper = styled.div<{ expandSection?: Section }>`
+  height: 100vh;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: ${(props) =>
+    Object.values(Section)
+      .map((section) => (section === props.expandSection ? "2fr" : "1fr"))
+      .join(" ")};
+  transition: grid-template-columns 0.2s;
+
   grid-template-rows: 64px 1fr;
   grid-template-areas:
     "header header header"
@@ -16,64 +28,47 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
   grid-area: header;
+  display: flex;
+  justify-content: space-between;
 `
 
 const EvolverSection = styled.div`
+  background-color: #f3f9f2;
   grid-area: evolver;
 `
 
-const StyledSimulationQueue = styled(SimulationQueue)`
+const SimulationQueueSection = styled.div`
   grid-area: simulationQueue;
 `
 
 const SimulatorSection = styled.div`
+  background-color: #f3f7f8;
   grid-area: simulator;
 `
 
 function App() {
-  const [gameSimulatorOnline, setGameSimulatorOnline] = useState<boolean>(false)
-  const [runningSimulationsIds, setRunningSimulationsIds] = useState<string[]>([])
-
-  useInterval(() => {
-    fetch(simulationServerURL + "/hello")
-      .then((res) => (!res.ok ? Promise.reject() : res))
-      .then((res) => setGameSimulatorOnline(true))
-      .catch((err) => setGameSimulatorOnline(false))
-  }, 5000)
-
-  useInterval(() => {
-    if (gameSimulatorOnline) {
-      fetch(simulationServerURL + "/runningSimulations")
-        .then((res) => (!res.ok ? Promise.reject() : res))
-        .then((res) => res.json())
-        .then((json) => json as string[])
-        .then(setRunningSimulationsIds)
-        .catch((err) => null)
-    }
-  }, 500)
+  const [expandSection, setExpandedSection] = useState<Section | undefined>(undefined)
+  const [letSectionsExpand, setLetSectionsExpand] = useState<boolean>(true)
 
   return (
-    <Wrapper>
+    <Wrapper key={"App-wrapper"} expandSection={letSectionsExpand ? expandSection : undefined}>
       <Header>
         <h1>Sol AI</h1>
-      </Header>
-      <EvolverSection>Evolver</EvolverSection>
-      <StyledSimulationQueue />
-      <SimulatorSection>
-        {gameSimulatorOnline ? (
-          <span>Game simulator online!</span>
-        ) : (
-          <span>Game simulator offline :(</span>
-        )}
-        {/*<button onClick={() => handleCreateGame()}>Create game</button>*/}
-        {runningSimulationsIds.map((id) => (
-          <RunningGame
-            key={id}
-            gameId={id}
-            // onTerminateClick={handleTerminateGame}
-            // onPlayersDataClick={handleGetGameData}
+        <span>
+          <input
+            type={"checkbox"}
+            checked={letSectionsExpand}
+            onChange={(e) => setLetSectionsExpand(e.target.checked)}
           />
-        ))}
+          <label>let sections expand</label>
+        </span>
+      </Header>
+      <EvolverSection onClick={() => setExpandedSection(Section.evolver)}>Evolver</EvolverSection>
+      <SimulationQueueSection onClick={() => setExpandedSection(Section.queue)}>
+        <SimulationQueue />
+      </SimulationQueueSection>
+      <SimulatorSection onClick={() => setExpandedSection(Section.simulator)}>
+        <SimulatorPage />
       </SimulatorSection>
     </Wrapper>
   )

@@ -61,7 +61,7 @@ const SingleQueue = <T extends SimulationData | SimulationResult>({
         </Column>
         {exampleDataElems}
       </QueueHeader>
-      {queueItemsElement}
+      {queueItemsElement.length === 0 ? <span>( no items )</span> : queueItemsElement}
     </Wrapper>
   )
 }

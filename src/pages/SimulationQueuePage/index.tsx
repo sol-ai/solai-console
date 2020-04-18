@@ -3,6 +3,7 @@ import useSimulationQueue from "../../services/simulation_queue/useSimulationQue
 import { Header, QueueWrapper, Wrapper } from "./elements"
 import SimulationDataQueue from "./SimulationDataQueue"
 import SimulationResultQueue from "./SimulationResultQueue"
+import ConnectionStatus from "../../components/ConnectionStatus"
 
 type Props = {
   className?: string
@@ -20,7 +21,10 @@ const SimulationQueue: React.FC<Props> = ({ className }) => {
 
   return (
     <Wrapper className={className} key={"simulationQueue"}>
-      <Header>{simulationQueueConnected ? "Connected!" : "Disconnected :("}</Header>
+      <Header>
+        Simulations Queue
+        <ConnectionStatus connected={simulationQueueConnected} />
+      </Header>
 
       <QueueWrapper queueType={"simQueue"}>
         <SimulationDataQueue

@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react"
+import React, { useState } from "react"
 import { SimulationData } from "../../services/simulation_queue/types"
 import SingleQueue from "./SingleQueue"
 import SolSimulationData from "../../components/SolSimulationData"
@@ -35,7 +35,7 @@ const SimulationDataQueue: React.FC<Props> = ({
   }
 
   const simulationsDataElems = simulationsData.map((simulationData) => (
-    <SolSimulationData simulationData={simulationData} />
+    <SolSimulationData key={simulationData.simulationId} simulationData={simulationData} />
   ))
 
   return (

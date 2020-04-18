@@ -17,12 +17,16 @@ export default (): [
   const [simulationsQueueConnected, setSimulationsQueueConnected] = useState<boolean>(false)
   const [simulationsQueue, setSimulationsQueue] = useState<SimulationData[]>([])
   const [simulationsResultsQueue, setSimulationsResultsQueue] = useState<SimulationResult[]>([])
-  useInterval(() => {
-    fetch(apiAddress + "/simulationQueueConnected")
-      .then((res) => res.json())
-      .then(setSimulationsQueueConnected)
-      .catch((err) => null)
-  }, 1000)
+  useInterval(
+    () => {
+      fetch(apiAddress + "/simulationQueueConnected")
+        .then((res) => res.json())
+        .then(setSimulationsQueueConnected)
+        .catch((err) => null)
+    },
+    1000,
+    true,
+  )
 
   useInterval(() => {
     fetch(apiAddress + "/simulationsQueue")
