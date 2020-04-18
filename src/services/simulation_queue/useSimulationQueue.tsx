@@ -12,7 +12,7 @@ export default (): [
   SimulationResult[],
   () => void,
   () => void,
-  () => void,
+  (simulationData: SimulationData) => void,
 ] => {
   const [simulationsQueueConnected, setSimulationsQueueConnected] = useState<boolean>(false)
   const [simulationsQueue, setSimulationsQueue] = useState<SimulationData[]>([])
@@ -61,24 +61,14 @@ export default (): [
       .then((queue) => setSimulationsResultsQueue(queue))
   }
 
-  const pushExampleSimulation = () => {
-    fetch("exampleFrankConfig.json")
-      .then((res) => res.json())
-      .then((charConfig) => {
-        const simData: SimulationData = {
-          simulationId: uuid(),
-          charactersConfigs: [charConfig, charConfig],
-          metrics: ["gameLength"],
-        }
-
-        fetch(apiAddress + "/pushSimulation", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify(simData),
-        })
-      })
+  const pushExampleSimulation = (simulationData: SimulationData) => {
+    fetch(apiAddress + "/pushSimulation", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(simulationData),
+    })
   }
 
   return [

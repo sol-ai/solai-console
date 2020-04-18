@@ -3,7 +3,7 @@ import useInterval from "./hooks/useInterval"
 import { simulationServerURL } from "./addresses"
 import RunningGame from "./components/RunningGame"
 import styled from "styled-components"
-import SimulationQueue from "./components/SimulationQueue"
+import SimulationQueue from "./pages/SimulationQueuePage"
 
 const Wrapper = styled.div`
   display: grid;

@@ -5,6 +5,7 @@ import ReactJson from "react-json-view-ts"
 
 type Props = {
   simulationData: SimulationData
+  onSimulationDataChange?: (simulationData: SimulationData) => void
 }
 
 const Wrapper = styled.div`
@@ -18,7 +19,7 @@ const Header = styled.div`
   cursor: pointer;
 `
 
-const SolSimulationData: React.FC<Props> = ({ simulationData }) => {
+const SolSimulationData: React.FC<Props> = ({ simulationData, onSimulationDataChange }) => {
   const [expanded, setExpanded] = useState<boolean>(false)
 
   return (
@@ -35,6 +36,18 @@ const SolSimulationData: React.FC<Props> = ({ simulationData }) => {
           displayDataTypes={false}
           displayObjectSize={false}
           collapsed={2}
+          onEdit={
+            onSimulationDataChange &&
+            ((edit) => onSimulationDataChange(edit.updated_src as SimulationData))
+          }
+          onDelete={
+            onSimulationDataChange &&
+            ((edit) => onSimulationDataChange(edit.updated_src as SimulationData))
+          }
+          onAdd={
+            onSimulationDataChange &&
+            ((edit) => onSimulationDataChange(edit.updated_src as SimulationData))
+          }
         />
       )}
     </Wrapper>
