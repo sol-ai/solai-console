@@ -11,6 +11,7 @@ import {
 import { SimulationData, SimulationResult } from "../../../services/simulation_queue/types"
 
 type Props<T> = {
+  name: string
   onDeleteAll: () => void
   exampleData?: {
     onAddExampleData: () => void
@@ -22,6 +23,7 @@ type Props<T> = {
 }
 
 const SingleQueue = <T extends SimulationData | SimulationResult>({
+  name,
   onDeleteAll,
   exampleData,
   queueItemsElement,
@@ -48,7 +50,7 @@ const SingleQueue = <T extends SimulationData | SimulationResult>({
   return (
     <Wrapper>
       <QueueHeader>
-        <QueueHeaderTitle>Simulations</QueueHeaderTitle>
+        <QueueHeaderTitle>{name}</QueueHeaderTitle>
         <Column>
           {exampleData && !exampleData.editingElement ? (
             <PushExampleButton onClick={exampleData.onAddExampleData}>
@@ -61,7 +63,8 @@ const SingleQueue = <T extends SimulationData | SimulationResult>({
         </Column>
         {exampleDataElems}
       </QueueHeader>
-      {queueItemsElement.length === 0 ? <span>( no items )</span> : queueItemsElement}
+      <div>( {queueItemsElement.length} items )</div>
+      {queueItemsElement}
     </Wrapper>
   )
 }

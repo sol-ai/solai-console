@@ -4,6 +4,7 @@ import RunningGame from "./components/RunningGame"
 import styled from "styled-components"
 import SimulationQueue from "./pages/SimulationQueuePage"
 import SimulatorPage from "./pages/SimulatorPage"
+import IconButton from "./components/IconButton"
 
 enum Section {
   evolver = "evolver",
@@ -46,29 +47,42 @@ const SimulatorSection = styled.div`
   grid-area: simulator;
 `
 
+const PageTitle = styled.h2`
+  cursor: pointer;
+  transition: color 0.2s;
+  &:hover {
+    color: gray;
+  }
+`
+
 function App() {
   const [expandSection, setExpandedSection] = useState<Section | undefined>(undefined)
-  const [letSectionsExpand, setLetSectionsExpand] = useState<boolean>(true)
+
+  const handleExpandSectionClick = (section: Section) => {
+    setExpandedSection((prevState) => (prevState === section ? undefined : section))
+  }
 
   return (
-    <Wrapper key={"App-wrapper"} expandSection={letSectionsExpand ? expandSection : undefined}>
+    <Wrapper key={"App-wrapper"} expandSection={expandSection}>
       <Header>
         <h1>Sol AI</h1>
-        <span>
-          <input
-            type={"checkbox"}
-            checked={letSectionsExpand}
-            onChange={(e) => setLetSectionsExpand(e.target.checked)}
-          />
-          <label>let sections expand</label>
-        </span>
       </Header>
-      <EvolverSection onClick={() => setExpandedSection(Section.evolver)}>Evolver</EvolverSection>
-      <SimulationQueueSection onClick={() => setExpandedSection(Section.queue)}>
-        <SimulationQueue />
+      <EvolverSection>Evolver</EvolverSection>
+      <SimulationQueueSection>
+        <SimulationQueue
+          pageTitleElem={
+            <PageTitle onClick={() => handleExpandSectionClick(Section.queue)}>Queue</PageTitle>
+          }
+        />
       </SimulationQueueSection>
-      <SimulatorSection onClick={() => setExpandedSection(Section.simulator)}>
-        <SimulatorPage />
+      <SimulatorSection>
+        <SimulatorPage
+          pageTitleElem={
+            <PageTitle onClick={() => handleExpandSectionClick(Section.simulator)}>
+              Simulator
+            </PageTitle>
+          }
+        />
       </SimulatorSection>
     </Wrapper>
   )

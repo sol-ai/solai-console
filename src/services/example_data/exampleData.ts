@@ -10,5 +10,7 @@ export const fetchExampleSimulationData = (): Promise<SimulationData> =>
   fetchExampleCharacterConfig().then((charConfig) => ({
     simulationId: uuid(),
     charactersConfigs: [charConfig, charConfig],
-    metrics: ["gameLength", "nearDeathFrames"],
+    metrics: ["gameLength", "nearDeathFrames", "characterWon"],
   }))
+
+export const randomId = (): string => uuid()

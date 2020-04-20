@@ -21,32 +21,35 @@ export default (): [
     () => {
       fetch(apiAddress + "/simulationQueueConnected")
         .then((res) => res.json())
-        .then(setSimulationsQueueConnected)
-        .catch((err) => null)
+        .then(() => setSimulationsQueueConnected(true))
+        .catch((err) => setSimulationsQueueConnected(false))
     },
     1000,
     true,
   )
 
   useInterval(() => {
-    fetch(apiAddress + "/simulationsQueue")
-      .then((res) => res.json())
-      .then((simDataQueue) => {
-        console.log(simDataQueue)
-        if (!simDataQueue) {
-          Promise.reject("simulation data invalid")
-        }
-        return simDataQueue as SimulationData[]
-      })
-      .then(setSimulationsQueue)
-      .catch((err) => null)
+    if (simulationsQueueConnected) {
+      fetch(apiAddress + "/simulationsQueue")
+        .then((res) => res.json())
+        .then((simDataQueue) => {
+          if (!simDataQueue) {
+            Promise.reject("simulation data invalid")
+          }
+          return simDataQueue as SimulationData[]
+        })
+        .then(setSimulationsQueue)
+        .catch((err) => null)
+    }
   }, 1000)
 
   useInterval(() => {
-    fetch(apiAddress + "/simulationsResultsQueue")
-      .then((res) => res.json())
-      .then(setSimulationsResultsQueue)
-      .catch((err) => null)
+    if (simulationsQueueConnected) {
+      fetch(apiAddress + "/simulationsResultsQueue")
+        .then((res) => res.json())
+        .then(setSimulationsResultsQueue)
+        .catch((err) => null)
+    }
   }, 1000)
 
   const deleteAllSimulations = () => {

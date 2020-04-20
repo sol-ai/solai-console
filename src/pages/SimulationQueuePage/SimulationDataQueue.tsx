@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import { SimulationData } from "../../services/simulation_queue/types"
 import SingleQueue from "./SingleQueue"
 import SolSimulationData from "../../components/SolSimulationData"
-import { fetchExampleSimulationData } from "../../services/example_data/exampleData"
+import { fetchExampleSimulationData, randomId } from "../../services/example_data/exampleData"
+import NumberInput from "../../components/NumberInput"
 
 type Props = {
   simulationsData: SimulationData[]
@@ -16,6 +17,7 @@ const SimulationDataQueue: React.FC<Props> = ({
   pushSimulationData,
 }) => {
   const [editingDataToPush, setEditingDataToPush] = useState<SimulationData | undefined>(undefined)
+  const [editingDataToPushCount, setEditingDataToPushCount] = useState<number>(1)
 
   const handleAddSimulationData = () => {
     if (!editingDataToPush) {
@@ -26,6 +28,15 @@ const SimulationDataQueue: React.FC<Props> = ({
   const handleAcceptExampleSimulation = () => {
     if (editingDataToPush) {
       pushSimulationData(editingDataToPush)
+      if (editingDataToPushCount > 1) {
+        Array.from(Array(editingDataToPushCount - 1).keys()).forEach(() => {
+          const newData: SimulationData = {
+            ...editingDataToPush,
+            simulationId: randomId(),
+          }
+          pushSimulationData(newData)
+        })
+      }
       setEditingDataToPush(undefined)
     }
   }
@@ -40,6 +51,7 @@ const SimulationDataQueue: React.FC<Props> = ({
 
   return (
     <SingleQueue
+      name={"Simulations"}
       onDeleteAll={deleteAllSimulationsData}
       queueItemsElement={simulationsDataElems}
       exampleData={{
@@ -47,10 +59,17 @@ const SimulationDataQueue: React.FC<Props> = ({
         onExampleDataAccepted: handleAcceptExampleSimulation,
         onExampleDataRejected: handleRejectExampleSimulation,
         editingElement: editingDataToPush && (
-          <SolSimulationData
-            simulationData={editingDataToPush}
-            onSimulationDataChange={setEditingDataToPush}
-          />
+          <>
+            <NumberInput
+              name={"Copies"}
+              value={editingDataToPushCount}
+              onChange={(value) => setEditingDataToPushCount(parseInt(value))}
+            />
+            <SolSimulationData
+              simulationData={editingDataToPush}
+              onSimulationDataChange={setEditingDataToPush}
+            />
+          </>
         ),
       }}
     />

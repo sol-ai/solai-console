@@ -13,7 +13,7 @@ export const Header = styled.div`
   grid-area: queue-header;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
 `
 
 export const QueueWrapper = styled.div<{ queueType: "simQueue" | "resQueue" }>`

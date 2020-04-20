@@ -1,4 +1,4 @@
-import React from "react"
+import React, { ReactNode } from "react"
 import useSimulationQueue from "../../services/simulation_queue/useSimulationQueue"
 import { Header, QueueWrapper, Wrapper } from "./elements"
 import SimulationDataQueue from "./SimulationDataQueue"
@@ -7,9 +7,10 @@ import ConnectionStatus from "../../components/ConnectionStatus"
 
 type Props = {
   className?: string
+  pageTitleElem: ReactNode
 }
 
-const SimulationQueue: React.FC<Props> = ({ className }) => {
+const SimulationQueue: React.FC<Props> = ({ className, pageTitleElem }) => {
   const [
     simulationQueueConnected,
     simulationsQueue,
@@ -22,7 +23,7 @@ const SimulationQueue: React.FC<Props> = ({ className }) => {
   return (
     <Wrapper className={className} key={"simulationQueue"}>
       <Header>
-        Simulations Queue
+        {pageTitleElem}
         <ConnectionStatus connected={simulationQueueConnected} />
       </Header>
 

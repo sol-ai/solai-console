@@ -4,7 +4,9 @@ import styled from "styled-components"
 import ReactJson from "react-json-view-ts"
 
 type Props = {
-  simulationResult: SimulationResult
+  simulationId: string
+  simulationResult?: SimulationResult
+  onClick?: (simulationId: string) => void
 }
 
 const Wrapper = styled.div`
@@ -18,23 +20,24 @@ const Header = styled.div`
   cursor: pointer;
 `
 
-const SolSimulationResult: React.FC<Props> = ({ simulationResult }) => {
-  const [expanded, setExpanded] = useState<boolean>(false)
-
+const SolSimulationResult: React.FC<Props> = ({ simulationId, simulationResult, onClick }) => {
   return (
     <Wrapper>
-      <Header onClick={() => setExpanded(!expanded)}>
-        {simulationResult.simulationId.slice(0, Math.min(8, simulationResult.simulationId.length))}
+      <Header onClick={() => onClick && onClick(simulationId)}>
+        {simulationId.slice(0, Math.min(8, simulationId.length))}
       </Header>
-      {expanded && (
+      {simulationResult && (
         <ReactJson
           src={simulationResult}
-          name={"simulationData"}
+          name={"simulationResult"}
           theme={"harmonic"}
           enableClipboard={false}
           displayDataTypes={false}
           displayObjectSize={false}
-          collapsed={2}
+          collapsed={3}
+          shouldCollapse={({ name, src, type }) =>
+            name ? ["simulationData", "simulationId"].includes(name) : false
+          }
         />
       )}
     </Wrapper>

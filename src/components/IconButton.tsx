@@ -4,13 +4,14 @@ import styled from "styled-components"
 type Props = {
   className?: string
   style?: CSSProperties
-  iconType: "cross" | "check" | "check-light" | "cross-light"
+  iconType: "cross" | "check" | "check-light" | "cross-light" | "none"
   onClick?: () => void
   textBefore?: string
   textAfter?: string
 }
 
 const ICONS_BY_NAME: Record<string, string> = {
+  none: "",
   cross: "&#x274C;",
   check: "&#x2705;",
   "check-light": "&#x2713;",
@@ -22,7 +23,7 @@ const StyledButton = styled.button`
   border: none;
   outline: none;
   cursor: pointer;
-
+  padding: 0;
   &:hover {
     border-bottom: 1px solid gray;
   }
@@ -42,8 +43,8 @@ const IconButton: React.FC<Props> = ({
       className={className}
       onClick={onClick && onClick}
       dangerouslySetInnerHTML={{
-        __html: `${textBefore ? textBefore : ""}${ICONS_BY_NAME[iconType]}${
-          textAfter ? textAfter : ""
+        __html: `${textBefore ? textBefore + " " : ""}${ICONS_BY_NAME[iconType]}${
+          textAfter ? " " + textAfter : ""
         }`,
       }}
     />

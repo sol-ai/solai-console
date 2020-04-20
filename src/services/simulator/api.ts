@@ -24,3 +24,25 @@ export const intermediateSimulationResult = (
     .then((res) => res.json())
     .then((res) => res || null)
     .then((res) => res as SimulationResult | null)
+
+export const setHeadlessSimulations = (headless: boolean): Promise<boolean> =>
+  fetch(simulationServerURL + "/headlessSimulations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(headless),
+  })
+    .then((res) => res.json())
+    .then((res) => res as boolean)
+
+export const setSimulationUpdateDelay = (value: number): Promise<number> =>
+  fetch(simulationServerURL + "/simulationUpdateDelay", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(value),
+  })
+    .then((res) => res.json())
+    .then((res) => res as number)
