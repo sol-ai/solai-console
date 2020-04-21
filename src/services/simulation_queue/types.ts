@@ -43,3 +43,7 @@ export type SimulationResult = {
   simulationData: SimulationData
   metrics: Record<string, number>
 }
+
+export type EvolvedCharacter = [number, CharacterConfig]
+
+export type EvolvedPopulation = EvolvedCharacter[]

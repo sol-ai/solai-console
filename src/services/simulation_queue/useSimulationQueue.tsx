@@ -24,8 +24,8 @@ export default (): [
         .then(() => setSimulationsQueueConnected(true))
         .catch((err) => setSimulationsQueueConnected(false))
     },
-    1000,
-    true,
+    3000,
+    false,
   )
 
   useInterval(() => {
@@ -41,7 +41,7 @@ export default (): [
         .then(setSimulationsQueue)
         .catch((err) => null)
     }
-  }, 1000)
+  }, 5000)
 
   useInterval(() => {
     if (simulationsQueueConnected) {
@@ -50,7 +50,7 @@ export default (): [
         .then(setSimulationsResultsQueue)
         .catch((err) => null)
     }
-  }, 1000)
+  }, 5000)
 
   const deleteAllSimulations = () => {
     fetch(apiAddress + "/deleteAllSimulations", {

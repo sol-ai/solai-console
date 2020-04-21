@@ -1,10 +1,8 @@
 import React, { useState } from "react"
-import useInterval from "./hooks/useInterval"
-import RunningGame from "./components/RunningGame"
 import styled from "styled-components"
 import SimulationQueue from "./pages/SimulationQueuePage"
 import SimulatorPage from "./pages/SimulatorPage"
-import IconButton from "./components/IconButton"
+import EvolverPage from "./pages/EvolverPage"
 
 enum Section {
   evolver = "evolver",
@@ -67,7 +65,13 @@ function App() {
       <Header>
         <h1>Sol AI</h1>
       </Header>
-      <EvolverSection>Evolver</EvolverSection>
+      <EvolverSection>
+        <EvolverPage
+          titleElement={
+            <PageTitle onClick={() => handleExpandSectionClick(Section.evolver)}>Evolver</PageTitle>
+          }
+        />
+      </EvolverSection>
       <SimulationQueueSection>
         <SimulationQueue
           pageTitleElem={
