@@ -1,6 +1,6 @@
 import { SimulationResult } from "../../services/simulation_queue/types"
 import React, { useState } from "react"
-import SingleQueue from "./SingleQueue"
+import SingleQueue from "../../components/SingleQueue"
 import SolSimulationResult from "../../components/SolSimulationResult"
 
 type Props = {
@@ -34,11 +34,9 @@ const SimulationResultQueue: React.FC<Props> = ({ simulationsResult, deleteAll }
   ))
 
   return (
-    <SingleQueue
-      name={"Results"}
-      onDeleteAll={deleteAll}
-      queueItemsElement={simulationsResultElems}
-    />
+    <SingleQueue name={"Results"} onDeleteAll={deleteAll}>
+      {simulationsResultElems}
+    </SingleQueue>
   )
 }
 

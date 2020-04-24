@@ -25,32 +25,40 @@ export default (): [
         .catch((err) => setSimulationsQueueConnected(false))
     },
     3000,
-    false,
+    true,
   )
 
-  useInterval(() => {
-    if (simulationsQueueConnected) {
-      fetch(apiAddress + "/simulationsQueue")
-        .then((res) => res.json())
-        .then((simDataQueue) => {
-          if (!simDataQueue) {
-            Promise.reject("simulation data invalid")
-          }
-          return simDataQueue as SimulationData[]
-        })
-        .then(setSimulationsQueue)
-        .catch((err) => null)
-    }
-  }, 5000)
+  useInterval(
+    () => {
+      if (simulationsQueueConnected) {
+        fetch(apiAddress + "/simulationsQueue")
+          .then((res) => res.json())
+          .then((simDataQueue) => {
+            if (!simDataQueue) {
+              Promise.reject("simulation data invalid")
+            }
+            return simDataQueue as SimulationData[]
+          })
+          .then(setSimulationsQueue)
+          .catch((err) => null)
+      }
+    },
+    5000,
+    true,
+  )
 
-  useInterval(() => {
-    if (simulationsQueueConnected) {
-      fetch(apiAddress + "/simulationsResultsQueue")
-        .then((res) => res.json())
-        .then(setSimulationsResultsQueue)
-        .catch((err) => null)
-    }
-  }, 5000)
+  useInterval(
+    () => {
+      if (simulationsQueueConnected) {
+        fetch(apiAddress + "/simulationsResultsQueue")
+          .then((res) => res.json())
+          .then(setSimulationsResultsQueue)
+          .catch((err) => null)
+      }
+    },
+    5000,
+    true,
+  )
 
   const deleteAllSimulations = () => {
     fetch(apiAddress + "/deleteAllSimulations", {

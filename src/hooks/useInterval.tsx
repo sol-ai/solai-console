@@ -3,14 +3,17 @@ import { useEffect, useRef } from "react"
 type Callback = (...args: any[]) => void
 
 export default (callback: Callback, delay: number, callAtStart: boolean = false) => {
-  const savedCallback = useRef<Callback | undefined>(undefined)
+  const savedCallback = useRef<Callback>(callback)
+
+  useEffect(() => {
+    if (callAtStart && savedCallback.current) {
+      savedCallback.current()
+    }
+  }, [])
 
   // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback
-    if (callAtStart) {
-      savedCallback.current()
-    }
   }, [callback])
 
   // Set up the interval.

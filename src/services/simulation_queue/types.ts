@@ -44,6 +44,14 @@ export type SimulationResult = {
   metrics: Record<string, number>
 }
 
-export type EvolvedCharacter = [number, CharacterConfig]
+export type EvolvedCharacter = {
+  fitness: number
+  characterConfig: CharacterConfig
+}
 
-export type EvolvedPopulation = EvolvedCharacter[]
+export type EvolvedPopulation = {
+  populationId: string
+  epoch: number
+  isFinalEpoch: boolean
+  evolvedCharacters: EvolvedCharacter[]
+}

@@ -1,9 +1,10 @@
 import React, { useState } from "react"
 import { SimulationData } from "../../services/simulation_queue/types"
-import SingleQueue from "./SingleQueue"
+import SingleQueue from "../../components/SingleQueue"
 import SolSimulationData from "../../components/SolSimulationData"
 import { fetchExampleSimulationData, randomId } from "../../services/example_data/exampleData"
 import NumberInput from "../../components/NumberInput"
+import PushSimulationData from "./PushSimulationData"
 
 type Props = {
   simulationsData: SimulationData[]
@@ -49,11 +50,8 @@ const SimulationDataQueue: React.FC<Props> = ({
     <SolSimulationData key={simulationData.simulationId} simulationData={simulationData} />
   ))
 
-  return (
-    <SingleQueue
-      name={"Simulations"}
-      onDeleteAll={deleteAllSimulationsData}
-      queueItemsElement={simulationsDataElems}
+  const pushSimDataElems = (
+    <PushSimulationData
       exampleData={{
         onAddExampleData: handleAddSimulationData,
         onExampleDataAccepted: handleAcceptExampleSimulation,
@@ -73,6 +71,16 @@ const SimulationDataQueue: React.FC<Props> = ({
         ),
       }}
     />
+  )
+
+  return (
+    <SingleQueue
+      name={"Simulations"}
+      onDeleteAll={deleteAllSimulationsData}
+      subHeaderElems={pushSimDataElems}
+    >
+      {simulationsDataElems}
+    </SingleQueue>
   )
 }
 

@@ -6,7 +6,7 @@ import ReactJson from "react-json-view-ts"
 type Props = {
   characterId: string
   characterConfig?: CharacterConfig
-  onClick?: (characterId: string) => void
+  onHeaderClick?: (characterId: string, characterConfig?: CharacterConfig) => void
 }
 
 const Wrapper = styled.div`
@@ -20,10 +20,10 @@ const Header = styled.div`
   cursor: pointer;
 `
 
-const CharacterConfigComp: React.FC<Props> = ({ characterId, characterConfig, onClick }) => {
+const Character: React.FC<Props> = ({ characterId, characterConfig, onHeaderClick }) => {
   return (
     <Wrapper>
-      <Header onClick={() => onClick && onClick(characterId)}>
+      <Header onClick={() => onHeaderClick && onHeaderClick(characterId, characterConfig)}>
         {characterId.slice(0, Math.min(8, characterId.length))}
       </Header>
       {characterConfig && (
@@ -41,4 +41,4 @@ const CharacterConfigComp: React.FC<Props> = ({ characterId, characterConfig, on
   )
 }
 
-export default CharacterConfigComp
+export default Character
