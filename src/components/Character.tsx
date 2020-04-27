@@ -7,6 +7,7 @@ type Props = {
   characterId: string
   characterConfig?: CharacterConfig
   onHeaderClick?: (characterId: string, characterConfig?: CharacterConfig) => void
+  collapsed?: boolean
 }
 
 const Wrapper = styled.div`
@@ -20,13 +21,19 @@ const Header = styled.div`
   cursor: pointer;
 `
 
-const Character: React.FC<Props> = ({ characterId, characterConfig, onHeaderClick }) => {
+const Character: React.FC<Props> = ({
+  characterId,
+  characterConfig,
+  onHeaderClick,
+  collapsed = false,
+}) => {
   return (
     <Wrapper>
       <Header onClick={() => onHeaderClick && onHeaderClick(characterId, characterConfig)}>
-        {characterId.slice(0, Math.min(8, characterId.length))}
+        {characterId.slice(0, Math.min(8, characterId.length))} (
+        {characterConfig && characterConfig.name})
       </Header>
-      {characterConfig && (
+      {!collapsed && characterConfig && (
         <ReactJson
           src={characterConfig}
           name={"character config"}
