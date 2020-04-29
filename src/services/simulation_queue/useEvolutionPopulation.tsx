@@ -16,15 +16,13 @@ type UseEvolutionPopulation = {
 
 const convertFromRawPopulations = (rawPopulations: RawEvolvedPopulation[]): EvolvedPopulation[] => {
   const populations: EvolvedPopulation[] = rawPopulations.map((rawPopulationCharacters) => {
-    const evolvedCharacters: EvolvedCharacter[] = Object.values(rawPopulationCharacters).map(
-      (rawCharacter) => {
-        const characterConfig: EvolvedCharacter = {
-          fitness: rawCharacter.fitness,
-          characterConfig: rawCharacter.characterConfig,
-        }
-        return characterConfig
-      },
-    )
+    const evolvedCharacters: EvolvedCharacter[] = rawPopulationCharacters.map((rawCharacter) => {
+      const characterConfig: EvolvedCharacter = {
+        fitness: rawCharacter.fitness,
+        characterConfig: rawCharacter.characterConfig,
+      }
+      return characterConfig
+    })
 
     const population: EvolvedPopulation = {
       populationId: "pop-id-123",
