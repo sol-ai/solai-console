@@ -6,7 +6,7 @@ import { randomId } from "../example_data/exampleData"
 const backendAddress = "http://localhost:3001"
 const apiAddress = backendAddress + "/api"
 
-type RawEvolvedCharacter = [number, CharacterConfig]
+type RawEvolvedCharacter = { fitness: number; characterConfig: CharacterConfig }
 type RawEvolvedPopulation = RawEvolvedCharacter[]
 
 type UseEvolutionPopulation = {
@@ -16,13 +16,15 @@ type UseEvolutionPopulation = {
 
 const convertFromRawPopulations = (rawPopulations: RawEvolvedPopulation[]): EvolvedPopulation[] => {
   const populations: EvolvedPopulation[] = rawPopulations.map((rawPopulationCharacters) => {
-    const evolvedCharacters: EvolvedCharacter[] = rawPopulationCharacters.map((rawCharacter) => {
-      const characterConfig: EvolvedCharacter = {
-        fitness: rawCharacter[0],
-        characterConfig: rawCharacter[1],
-      }
-      return characterConfig
-    })
+    const evolvedCharacters: EvolvedCharacter[] = Object.values(rawPopulationCharacters).map(
+      (rawCharacter) => {
+        const characterConfig: EvolvedCharacter = {
+          fitness: rawCharacter.fitness,
+          characterConfig: rawCharacter.characterConfig,
+        }
+        return characterConfig
+      },
+    )
 
     const population: EvolvedPopulation = {
       populationId: "pop-id-123",
