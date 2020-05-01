@@ -48,7 +48,7 @@ export default ({ exampleCharacterConfigs, onPushSimulationData }: Props) => {
           onPushSimulationData(newData)
         })
       }
-
+      setSimulationData(undefined)
       setExpanded((prevExpanded) => !prevExpanded)
     }
   }
