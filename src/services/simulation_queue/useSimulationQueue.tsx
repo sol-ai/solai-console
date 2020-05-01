@@ -1,97 +1,65 @@
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 import useInterval from "../../hooks/useInterval"
 import { SimulationData, SimulationResult } from "./types"
-import { v4 as uuid } from "uuid"
+import useSimulationQueueOnline from "./useSimulationQueueOnline"
+import * as api from "./api"
 
-const backendAddress = "http://localhost:3001"
-const apiAddress = backendAddress + "/api"
+export type UseSimulationQueue = {
+  simulationDataQueue: SimulationData[]
+  simulationResultQueue: SimulationResult[]
+  deleteSimulationDataQueue: () => void
+  deleteSimulationResultQueue: () => void
+  pushSimulationData: (simulationData: SimulationData) => void
+}
 
-export default (): [
-  boolean,
-  SimulationData[],
-  SimulationResult[],
-  () => void,
-  () => void,
-  (simulationData: SimulationData) => void,
-] => {
-  const [simulationsQueueConnected, setSimulationsQueueConnected] = useState<boolean>(false)
-  const [simulationsQueue, setSimulationsQueue] = useState<SimulationData[]>([])
-  const [simulationsResultsQueue, setSimulationsResultsQueue] = useState<SimulationResult[]>([])
+export default (): UseSimulationQueue => {
+  const simulationQueueOnline = useSimulationQueueOnline()
+  const [simulationDataQueue, setSimulationDataQueue] = useState<SimulationData[]>([])
+  const [simulationResultQueue, setSimulationResultQueue] = useState<SimulationResult[]>([])
+
   useInterval(
-    () => {
-      fetch(apiAddress + "/simulationQueueConnected")
-        .then((res) => res.json())
-        .then(() => setSimulationsQueueConnected(true))
-        .catch((err) => setSimulationsQueueConnected(false))
-    },
+    useCallback(() => {
+      if (simulationQueueOnline) {
+        api
+          .getSimulationDataQueue()
+          .then(setSimulationDataQueue)
+          .catch((err) => null)
+      }
+    }, [simulationQueueOnline]),
     3000,
     true,
   )
 
   useInterval(
-    () => {
-      if (simulationsQueueConnected) {
-        fetch(apiAddress + "/simulationsQueue")
-          .then((res) => res.json())
-          .then((simDataQueue) => {
-            if (!simDataQueue) {
-              Promise.reject("simulation data invalid")
-            }
-            return simDataQueue as SimulationData[]
-          })
-          .then(setSimulationsQueue)
+    useCallback(() => {
+      if (simulationQueueOnline) {
+        api
+          .getSimulationResultQueue()
+          .then(setSimulationResultQueue)
           .catch((err) => null)
       }
-    },
-    5000,
+    }, [simulationQueueOnline]),
+    3000,
     true,
   )
 
-  useInterval(
-    () => {
-      if (simulationsQueueConnected) {
-        fetch(apiAddress + "/simulationsResultsQueue")
-          .then((res) => res.json())
-          .then(setSimulationsResultsQueue)
-          .catch((err) => null)
-      }
-    },
-    5000,
-    true,
-  )
-
-  const deleteAllSimulations = () => {
-    fetch(apiAddress + "/deleteAllSimulations", {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((queue) => setSimulationsQueue(queue))
+  const deleteSimulationDataQueue = () => {
+    api.deleteSimulationDataQueue().then((queue) => setSimulationDataQueue(queue))
   }
 
-  const deleteAllSimulationResults = () => {
-    fetch(apiAddress + "/deleteAllSimulationResults", {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((queue) => setSimulationsResultsQueue(queue))
+  const deleteSimulationResultQueue = () => {
+    api.deleteSimulationResultQueue().then((queue) => setSimulationResultQueue(queue))
   }
 
-  const pushExampleSimulation = (simulationData: SimulationData) => {
-    fetch(apiAddress + "/pushSimulation", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(simulationData),
-    })
+  const pushSimulationData = (simulationData: SimulationData) => {
+    api.postSimulationData(simulationData)
   }
 
-  return [
-    simulationsQueueConnected,
-    simulationsQueue,
-    simulationsResultsQueue,
-    deleteAllSimulations,
-    deleteAllSimulationResults,
-    pushExampleSimulation,
-  ]
+  return {
+    simulationDataQueue,
+    simulationResultQueue,
+    deleteSimulationDataQueue,
+    deleteSimulationResultQueue,
+    pushSimulationData,
+  }
 }

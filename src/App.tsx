@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import styled from "styled-components"
-import SimulationQueue from "./pages/SimulationQueuePage"
+import SimulationQueuePage from "./pages/SimulationQueuePage"
 import SimulatorPage from "./pages/SimulatorPage"
 import EvolverPage from "./pages/EvolverPage"
 
@@ -73,7 +73,7 @@ function App() {
         />
       </EvolverSection>
       <SimulationQueueSection>
-        <SimulationQueue
+        <SimulationQueuePage
           pageTitleElem={
             <PageTitle onClick={() => handleExpandSectionClick(Section.queue)}>Queue</PageTitle>
           }

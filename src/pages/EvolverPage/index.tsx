@@ -22,14 +22,7 @@ const Wrapper = styled.div``
 
 const EvolverPage: React.FC<Props> = ({ titleElement }) => {
   const { populations, deleteAllPopulations } = useEvolutionPopulation()
-  const [
-    simulationsQueueConnected,
-    simulationsQueue,
-    simulationsResultsQueue,
-    deleteAllSimulations,
-    deleteAllSimulationResults,
-    pushExampleSimulation,
-  ] = useSimulationQueue()
+  const { pushSimulationData } = useSimulationQueue()
 
   const [playStage, setPlayStage] = useState<CharacterConfig[]>([])
 
@@ -43,7 +36,7 @@ const EvolverPage: React.FC<Props> = ({ titleElement }) => {
         metrics: ["gameLength"],
       }
 
-      pushExampleSimulation(simulation)
+      pushSimulationData(simulation)
     }
   }
 
