@@ -22,9 +22,24 @@ const SimulationDataQueue: React.FC<Props> = ({
     fetchExampleCharactersConfig().then((charConfigs) => setExampleCharacterConfigs(charConfigs))
   }, [])
 
-  const simulationsDataElems = simulationsData.map((simulationData) => (
-    <SolSimulationData key={simulationData.simulationId} simulationData={simulationData} />
-  ))
+  const maxItemsShow = 20
+
+  const simulationDataLimited = simulationsData.slice(0, maxItemsShow)
+  const simulationDataLimitedIds = simulationDataLimited.map((simData) => simData.simulationId)
+  const simulationsDataElemsLimited = simulationDataLimited.map((simulationData, i) => {
+    const simulationIdOccurances = simulationDataLimitedIds
+      .slice(0, i)
+      .filter((simId) => simId === simulationData.simulationId).length
+    const useSimulationId =
+      simulationIdOccurances === 0
+        ? simulationData.simulationId
+        : `(${simulationIdOccurances})${simulationData.simulationId}`
+    return simulationIdOccurances > 0 ? (
+      <SolSimulationData key={useSimulationId} simulationId={useSimulationId} />
+    ) : (
+      <SolSimulationData key={useSimulationId} simulationData={simulationData} />
+    )
+  })
 
   const pushSimDataElems = (
     <PushSimulationData
@@ -38,8 +53,9 @@ const SimulationDataQueue: React.FC<Props> = ({
       name={"Simulations"}
       onDeleteAll={deleteAllSimulationsData}
       subHeaderElems={pushSimDataElems}
+      overrideItemsCount={simulationsData.length}
     >
-      {simulationsDataElems}
+      {simulationsDataElemsLimited}
     </SingleQueue>
   )
 }

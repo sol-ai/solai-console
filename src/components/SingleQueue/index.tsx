@@ -16,6 +16,7 @@ type Props<T> = {
   headerElems?: ReactNode | ReactNode[]
   subHeaderElems?: ReactNode | ReactNode[]
   children?: ReactNode[]
+  overrideItemsCount?: number
 }
 
 const SingleQueue = <T extends SimulationData | SimulationResult>({
@@ -24,7 +25,9 @@ const SingleQueue = <T extends SimulationData | SimulationResult>({
   headerElems,
   subHeaderElems,
   children,
+  overrideItemsCount,
 }: Props<T>) => {
+  const itemsCount = overrideItemsCount || (children ? children.length : 0)
   return (
     <Wrapper>
       <QueueHeader>
@@ -37,7 +40,7 @@ const SingleQueue = <T extends SimulationData | SimulationResult>({
         {headerElems}
         {subHeaderElems}
       </QueueHeader>
-      <div>( {children ? children.length : 0} items )</div>
+      <div>( {itemsCount} items )</div>
       {children}
     </Wrapper>
   )
